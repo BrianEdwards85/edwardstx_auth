@@ -42,7 +42,7 @@
         [:div {:class "col-md-6"}
          [:div {:class "panel panel-login"}
           [:div.panel-heading
-           [:h2 "Sign in"]]
+           [:h2 "Sign in please"]]
           [:div.panel-body
            [:form.panel  ;;.form-horizontal
             [bootstrap-input-group user "inputEmail" "Email" "email"]
@@ -78,7 +78,7 @@
   (let [details (atom {})]
     (r/create-class
      {:component-did-mount
-      #(go (reset! details (<! (service/get-auth))))
+      #(go (reset! details (:body (<! (service/get-auth)))))
 
       :reagent-render
       (fn []

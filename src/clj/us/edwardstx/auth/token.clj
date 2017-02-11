@@ -2,10 +2,11 @@
   (:require [buddy.sign.jwt :as jwt]
             [buddy.core.keys :as keys]
             [clj-time.core :as time]
+            [clojure.string :as s]
             [us.edwardstx.auth.core :refer [conf]]))
 
-(def ec-privkey (keys/str->private-key (-> conf :jwt :private-key)))
-(def ec-pubkey (keys/str->public-key (-> conf :jwt :public-key)))
+(def ec-privkey (keys/str->private-key (s/replace (-> conf :jwt :private-key) "\\n" "\n")))
+(def ec-pubkey (keys/str->public-key  (s/replace (-> conf :jwt :public-key) "\\n" "\n")))
 
 (def headder {:alg :es256} ) ;;(-> conf :jwt :headder))
 (def issuer (-> conf :jwt :iss))

@@ -1,6 +1,4 @@
 (ns us.edwardstx.auth.core
-  (:require [us.edwardstx.common.conf :as c]))
+  (:require [us.edwardstx.conf.client :as c]))
 
-(def service-name "auth")
-
-(def conf (c/get-conf service-name))
+(def conf (c/get-conf))

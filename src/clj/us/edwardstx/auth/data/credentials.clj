@@ -7,3 +7,6 @@
 
 (defn get-credentials [user]
   (first (get-credentials-sql {:email user})))
+
+(defn set-credentials! [user salt hash]
+  (set-credentials-sql! {:email user :hash hash :salt salt}))

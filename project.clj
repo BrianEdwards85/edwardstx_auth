@@ -9,17 +9,22 @@
                  [org.clojure/clojurescript "1.9.293"
                   :scope "provided"]
                  [org.clojure/core.async "0.2.395"]
-                 [ring-server "0.4.0"]
-                 [reagent "0.6.0"]
-                 [reagent-utils "0.2.0"]
-                 [ring "1.5.0"]
+                 [org.clojure/tools.nrepl "0.2.12"]
+
+                 [aleph "0.4.1"]
+                 [ring/ring-core "1.5.1"]
                  [ring/ring-defaults "0.2.1"]
+
                  [compojure "1.5.1"]
                  [hiccup "1.0.5"]
                  [yogthos/config "0.8"]
                  [secretary "1.2.3"]
                  [venantius/accountant "0.1.7"
                   :exclusions [org.clojure/tools.reader]]
+                 [reagent "0.6.0"]
+                 [reagent-utils "0.2.0"]
+                 [re-frame "0.9.2"]
+                 [day8.re-frame/http-fx "0.1.3"]
 
                  [hikari-cp "1.7.5"]
                  [org.postgresql/postgresql "9.4.1208.jre7"]
@@ -32,11 +37,10 @@
                  [clj-time "0.11.0"]
 
                  [com.rpl/specter "0.10.0"]
-                 [clj-http "2.3.0"]
                  [cljs-http "0.1.42"]
-;;                 [cljs-ajax "0.5.8"]
 
-                 [hare "0.1.101"]]
+                 [us.edwardstx.conf/client "0.3.2"]
+                 [hare "0.2.0"]]
 
   :plugins [[lein-environ "1.0.2"]
             [lein-cljsbuild "1.1.1"]
@@ -74,6 +78,7 @@
               :pretty-print  false}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
+             :figwheel true
              :compiler
              {:main "us.edwardstx.auth.dev"
               :asset-path "/js/out"
@@ -91,8 +96,8 @@
 
   :figwheel
   {:http-server-root "public"
-   :server-port 3449
-   :nrepl-port 7002
+   :server-port 5002
+   :nrepl-port 6002
    :nrepl-middleware ["cemerick.piggieback/wrap-cljs-repl"
                       ]
    :css-dirs ["resources/public/css"]
@@ -100,15 +105,14 @@
 
 
 
-  :profiles {:dev {:repl-options {:init-ns us.edwardstx.auth.repl
+  :profiles {:dev {:repl-options {:init-ns us.edwardstx.auth
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
                    :dependencies [[ring/ring-mock "0.3.0"]
-                                  [ring/ring-devel "1.5.0"]
+                                  [ring/ring-devel "1.5.1"]
                                   [prone "1.1.4"]
                                   [midje "1.8.3" :exclusions [org.clojure/clojure]]
                                   [figwheel-sidecar "0.5.8"]
-                                  [org.clojure/tools.nrepl "0.2.12"]
                                   [com.cemerick/piggieback "0.2.2-SNAPSHOT"]
                                   [pjstadig/humane-test-output "0.8.1"]
                                   ]

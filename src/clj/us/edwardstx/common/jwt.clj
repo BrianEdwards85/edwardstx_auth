@@ -1,6 +1,6 @@
 (ns us.edwardstx.common.jwt
   (:require [clojure.data.json :as json]
-            [us.edwardstx.common.conf :as conf]
+            [us.edwardstx.conf.client :as conf]
             [buddy.sign.jwt :as jwt]
             [buddy.core.keys :as keys]
             [clj-http.client :as client]))
@@ -14,7 +14,7 @@
 ;;      (json/read-str :key-fn keyword)))
 
 (defn get-key-map []
-  {:key (-> (conf/get-conf "auth") :jwt :public-key)
+  {:key (-> (conf/get-conf) :jwt :public-key)
    :header {:alg :es256}})
 
 (def jwt-keys 

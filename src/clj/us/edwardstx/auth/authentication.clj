@@ -3,29 +3,36 @@
             [buddy.core.codecs :as codecs]
             [one-time.core :as ot]
             [us.edwardstx.auth.data.credentials :as c]
-            [clojure.string :as s]
-            [clojure.java.io :as io]
-            ))
+            [us.edwardstx.common.uuid :refer [uuid]]))
 
-(def salt
-  (delay
-   (-> "salt.txt"
-       io/resource
-       io/file
-       slurp
-       s/trim)))
+(defn verify-password [pass hash salt]
+  (mac/verify pass
+              (codecs/hex->bytes hash)
+              {:key salt :alg :hmac+sha256}))
 
-(defn verify-password [pw h]
-  (mac/verify pw
-              (codecs/hex->bytes h)
-              {:key @salt :alg :hmac+sha256}))
+(defn update-password! [user pass]
+  (let [salt (uuid)]
+    (c/set-credentials! user
+                       salt
+                       (-> (mac/hash pass {:key salt :alg :hmac+sha256})
+                           (codecs/bytes->hex)))))
 
 (defn authenticate
   ([{:keys [user pass auth]}]
    (authenticate user pass auth))
   ([user pass auth]
-   (if-let [{:keys [email, hash, secret]} (c/get-credentials user)]
+   (if-let [{:keys [email hash salt secret]} (c/get-credentials user)]
      (and
-      (verify-password pass hash)
+      (verify-password pass hash salt)
       (ot/is-valid-totp-token? auth secret))
+     false)))
+
+(defn authenticate-update-password!
+  ([{:keys [user opass npass auth]}]
+   (authenticate-update-password! user opass npass auth))
+  ([user opass npass auth]
+   (if (authenticate user opass auth)
+     (do
+       (update-password! user npass)
+       true)
      false)))

@@ -4,13 +4,16 @@
             [hiccup.page :refer [include-js include-css html5]]
             [us.edwardstx.auth.middleware :refer [wrap-middleware]]
             [clojure.data.json :as json]
+            [manifold.deferred :as d]
             [config.core :refer [env]]
             [us.edwardstx.common.uuid :refer [uuid]]
             [us.edwardstx.common.jwt :refer [wrap-jwt]]
             [us.edwardstx.auth.core :refer [conf]]
             [us.edwardstx.auth.authentication :as authentication]
             [us.edwardstx.auth.token :as token]
-            [clojure.java.io :as io]))
+            ))
+
+(def semaphore (d/deferred))
 
 (def mount-target
   [:div#app
@@ -62,10 +65,6 @@
        :body
        slurp))
 
-;;       io/reader
-;;       line-seq
-;;       (apply str)))
-
 (defn auth [r]
   (let [s (read-body r) 
         j (json/read-str s :key-fn keyword)
@@ -96,11 +95,6 @@
      :body (json/write-str v)
      :headers {"Content-Type" "application/json"}}
     invalid-token))
-;;  (if-let [t (get-in r [:cookies "uid" :value])]
-;;    (if-let [v (token/unsign t)]
-;;      (json/write-str v)
-;;      invalid-token)
-;;    invalid-token))
 
 (defn echo [r]
   (do
