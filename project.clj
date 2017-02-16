@@ -15,6 +15,8 @@
                  [ring/ring-core "1.5.1"]
                  [ring/ring-defaults "0.2.1"]
 
+                 [binaryage/devtools "0.9.0"]
+
                  [compojure "1.5.1"]
                  [hiccup "1.0.5"]
                  [yogthos/config "0.8"]
@@ -24,7 +26,10 @@
                  [reagent "0.6.0"]
                  [reagent-utils "0.2.0"]
                  [re-frame "0.9.2"]
+                 [re-com "0.9.0"]
+                 [re-frisk "0.3.0"]
                  [day8.re-frame/http-fx "0.1.3"]
+                 [cljs-ajax "0.5.8"]
 
                  [hikari-cp "1.7.5"]
                  [org.postgresql/postgresql "9.4.1208.jre7"]
@@ -37,7 +42,6 @@
                  [clj-time "0.11.0"]
 
                  [com.rpl/specter "0.10.0"]
-                 [cljs-http "0.1.42"]
 
                  [us.edwardstx.conf/client "0.3.2"]
                  [hare "0.2.0"]]

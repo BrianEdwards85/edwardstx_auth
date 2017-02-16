@@ -98,9 +98,8 @@
 
 (defn echo [r]
   (do
-    (println r)
     {:body (json/write-str (dissoc  r :body))
-     :headers {"Content-Type" "application/json"}
+     :headers {"Content-Type" "application/json" "Extra" "No"}
      :status 200}))
 
 (defroutes routes

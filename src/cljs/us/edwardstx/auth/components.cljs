@@ -47,11 +47,11 @@
            [:form.panel  ;;.form-horizontal
             [bootstrap-input-group user "inputEmail" "Email" "email"]
             [bootstrap-input-group pass "inputPassword" "Password" "password"]
-            [bootstrap-input-group auth "inputAuth" "Auth" "number"]
-           ]
+            [bootstrap-input-group auth "inputAuth" "Auth" "number"]]
            [:button {:class "btn btn-lg btn-primary btn-block" :on-click #(login @cred)} "Login"]
-           ]]
-         ]]])))
+           ]]]]])
+
+    ))
 
 (defn whoami-panel [details]
   [:div.row

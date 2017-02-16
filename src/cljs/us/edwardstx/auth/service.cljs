@@ -1,15 +1,41 @@
 (ns us.edwardstx.auth.service
-  (:require-macros [cljs.core.async.macros :refer [go]])
-  (:require [cljs-http.client :as http]
-            [cljs.core.async :refer [<!]]))
+  (:require [ajax.core :as ajax]))
 
-(defn send-auth [auth]
-  (http/post "/auth" {:json-params auth})
+(def json (ajax/json-response-format {:keywords? true}))
+
+(defn get-current-user [succcess failure]
+  {:http-xhrio {:method :get
+                :uri "/validate"
+                :response-format json
+                :on-success [succcess]
+                :on-failure [failure]}}
   )
+
+
+(defn login [auth succcess failure]
+  (let [body (.stringify js/JSON (clj->js auth))]
+    {:http-xhrio {:method          :post
+                  :uri             "/auth"
+                  :body            body
+                  :format          (ajax/json-request-format)
+                  :response-format json
+                  :headers {:content-type "application/json"}
+                  :on-success      [succcess]
+                  :on-failure      [failure]}})
+
+
+  )
+
+
+;;(defn send-auth [auth]
+;;  (http/post "/auth" {:json-params auth}))
+
+
+
 ;;(defn send-auth [auth]
 ;;  (let [json (clj->js auth)
 ;;        s (.stringify js/JSON json)]
 ;;    (POST "/auth" {:body s :headers {:content-type "application/json"}})))
 
-(defn get-auth []
-  (http/get "/validate"))
+;;(defn get-auth []
+;;  (http/get "/validate"))

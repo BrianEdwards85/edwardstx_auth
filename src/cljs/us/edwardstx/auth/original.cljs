@@ -1,16 +1,9 @@
-(ns us.edwardstx.auth.core
+(ns us.edwardstx.auth.original
     (:require [reagent.core :as reagent :refer [atom]]
               [us.edwardstx.auth.components :refer [login-page whoami-page]]
-              [us.edwardstx.auth.handlers :as handlers]
-              [us.edwardstx.auth.subs :as subs]
-              [us.edwardstx.auth.views :as v]
               [reagent.session :as session]
               [secretary.core :as secretary :include-macros true]
-              [re-frame.core :as re-frame]
-              [re-frisk.core :as re-frisk]
-
-;;              [accountant.core :as accountant]
-              ))
+              [accountant.core :as accountant]))
 
 ;; -------------------------
 ;; Views
@@ -25,16 +18,6 @@
 
 (defn current-page []
   [:div [(session/get :current-page)]])
-
-(defn main-panel []
-  (let [page (re-frame/subscribe [:page])]
-    (fn []
-      [:div
-       [:h2 @page]
-       [v/login-page #(re-frame/dispatch [:login %])]
-
-
-       ])))
 
 ;; -------------------------
 ;; Routes
@@ -54,17 +37,16 @@
 ;; -------------------------
 ;; Initialize app
 
-(defn ^:export init! []
-  (re-frame/dispatch-sync [:initialize])
-  (re-frisk/enable-re-frisk!)
-  (reagent/render [main-panel] (.getElementById js/document "app"))
-)
-;;  (accountant/configure-navigation!
-;;    {:nav-handler
-;;     (fn [path]
-;;       (secretary/dispatch! path))
-;;     :path-exists?
-;;     (fn [path]
-;;       (secretary/locate-route path))})
-;;  (accountant/dispatch-current!)
-;;  (mount-root))
+(defn mount-root []
+  (reagent/render [current-page] (.getElementById js/document "app")))
+
+(defn init! []
+  (accountant/configure-navigation!
+    {:nav-handler
+     (fn [path]
+       (secretary/dispatch! path))
+     :path-exists?
+     (fn [path]
+       (secretary/locate-route path))})
+  (accountant/dispatch-current!)
+  (mount-root))
