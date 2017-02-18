@@ -2,44 +2,64 @@
   (:require [re-frame.core :as re-frame]
             [us.edwardstx.auth.service :as service]
             [day8.re-frame.http-fx]
-            [ajax.core :as ajax]
-            ))
-(enable-console-print!)
+            [accountant.core :as accountant]
+            [clojure.string :as s]
+            [cemerick.url :as url]))
 
-(def init-db
-  {:page "______"
-   :user :none})
+(defn redirect [db]
+  (let [r (or (:redirect db) "/whoami")]
+    (if (s/starts-with? r "http")
+      (.assign js/location r)
+      (accountant/navigate! r))))
+
+(defn init-db []
+  {:page :loading
+   :user :none
+   :error nil
+   :redirect (-> js/window
+                 .-location
+                 .-href
+                 url/url
+                 :query
+                 (get "r"))})
 
 (re-frame/reg-event-fx
  :initialize
  (fn [_ _]
-   {:db init-db
-    :http-xhrio {:method :get
-                 :uri "/echo"
-                 :response-format (ajax/json-response-format {:keywords? true})
-                 :on-success [:update-page]}}))
+   (merge
+    (service/validate :valid-user :no-user)
+    {:db (init-db)})))
 
 (re-frame/reg-event-db
- :update-page
+ :valid-user
  (fn [db [_ r]]
-     (assoc db :page (:uri r))))
+   (redirect db)
+     (assoc db :user r)))
+
+(re-frame/reg-event-db
+ :no-user
+ (fn [db [_ _]]
+   (assoc db :user nil)))
+
+(re-frame/reg-event-db
+ :navigate
+ (fn [db [_ r]]
+   (assoc db :page r)))
 
 (re-frame/reg-event-fx
  :login
  (fn [db [_ r]]
-  ;; {:db db}
-   (service/login r :login-succcess :login-failure)
-   ))
+   (merge
+    (service/login r :valid-user :login-failure)
+    {:db (assoc db :error nil)})))
 
+;;(re-frame/reg-event-db
+;; :login-succcess
+;; (fn [db [_ r]]
+;;   (redirect db)
+;;   db))
 
-(re-frame/reg-event-db
- :login-succcess
- (fn [db [_ r]]
-   (js/console.log (str r))
-   db
-))
 (re-frame/reg-event-db
  :login-failure
  (fn [db [_ r]]
-   (js/console.log (str r))
-   db))
+   (assoc db :error "Login faild")))

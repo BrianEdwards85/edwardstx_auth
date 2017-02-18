@@ -17,10 +17,8 @@
 
 (def mount-target
   [:div#app
-      [:h3 "ClojureScript has not been compiled!"]
-      [:p "please run "
-       [:b "lein figwheel"]
-       " in order to start the compiler"]])
+   [:div.loader ]
+   ])
 
 
 (defn head [t]
@@ -73,7 +71,7 @@
       (let [sid (uuid)
             t (token/issue-token (:user cred) sid)]
         {:status 200
-         :body (json/write-str {:user (:user cred) :sid sid :token t})
+         :body (json/write-str {:sub (:user cred) :jti sid :iss "auth.edwardstx.us" :token t})
          :headers {"Content-Type" "application/json"}
          :cookies {"uid" {:value t :domain ".edwardstx.us" :max-age 86000}}})
       authentication-failed)))
@@ -103,6 +101,7 @@
      :status 200}))
 
 (defroutes routes
+  (GET "/" [] (loading-page))
   (GET "/" [] (loading-page))
   (GET "/whoami" [] (loading-page))
   (POST "/auth" [] auth )

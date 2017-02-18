@@ -34,7 +34,7 @@ a:hover {
   text-decoration: underline;
 }
 
-.panel-login {
+.panel-auth {
     border-color: #ccc;
 }
 
@@ -45,6 +45,7 @@ a:hover {
     width: 240px;
     height: 240px;
     animation: spin 2s linear infinite;
+    margin: auto;
 }
 
 @keyframes spin {

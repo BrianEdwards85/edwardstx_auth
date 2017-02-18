@@ -3,13 +3,6 @@
 
 (def json (ajax/json-response-format {:keywords? true}))
 
-(defn get-current-user [succcess failure]
-  {:http-xhrio {:method :get
-                :uri "/validate"
-                :response-format json
-                :on-success [succcess]
-                :on-failure [failure]}}
-  )
 
 
 (defn login [auth succcess failure]
@@ -21,15 +14,25 @@
                   :response-format json
                   :headers {:content-type "application/json"}
                   :on-success      [succcess]
-                  :on-failure      [failure]}})
+                  :on-failure      [failure]}}))
 
-
-  )
+(defn validate [valid-user no-user]
+  {:http-xhrio {:method :get
+                :uri "/validate"
+                :response-format json
+                :on-success [valid-user]
+                :on-failure [no-user]}})
 
 
 ;;(defn send-auth [auth]
 ;;  (http/post "/auth" {:json-params auth}))
 
+;;(defn get-current-user [succcess failure]
+;;  {:http-xhrio {:method :get
+;;                :uri "/validate"
+;;                :response-format json
+;;                :on-success [succcess]
+;;                :on-failure [failure]}})
 
 
 ;;(defn send-auth [auth]

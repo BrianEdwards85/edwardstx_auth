@@ -23,23 +23,26 @@
    [:h4 {:for name} label]
    (bootstrap-input-element a :placeholder label :type type :id name :name)])
 
+(defn auth-panel [& c]
+  [:div.container {:id  "login-container"}
+   [:div.row
+    [:div {:class "col-md-6"}
+     (into [:div {:class "panel panel-auth"}] c)]]])
+
 (defn login-page [login]
   (let [user (r/atom nil)
         pass (r/atom nil)
         auth (r/atom nil)]
     (fn []
-      [:div.container {:id  "login-container"}
-       [:div.row
-        [:div {:class "col-md-6"}
-         [:div {:class "panel panel-login"}
-          [:div.panel-heading
-           [:h2 "Sign in please"]]
-          [:div.panel-body
-           [:form.panel  ;;.form-horizontal
-            [bootstrap-input-group user "inputEmail" "Email" "email"]
-            [bootstrap-input-group pass "inputPassword" "Password" "password"]
-            [bootstrap-input-group auth "inputAuth" "Auth" "number"]]
-           [:button
-            {:class "btn btn-lg btn-primary btn-block"
-             :on-click #(login {:user @user :pass @pass :auth @auth})} "Login"]
-           ]]]]])))
+      [auth-panel
+       [:div.panel-heading
+        [:h2 "Please sign in"]]
+       [:div.panel-body
+        [:form.panel
+         [bootstrap-input-group user "inputEmail" "Email" "email"]
+         [bootstrap-input-group pass "inputPassword" "Password" "password"]
+         [bootstrap-input-group auth "inputAuth" "Auth" "number"]]
+        [:button
+         {:class "btn btn-lg btn-primary btn-block"
+          :on-click #(login {:user @user :pass @pass :auth @auth})} "Login"]
+        ]])))

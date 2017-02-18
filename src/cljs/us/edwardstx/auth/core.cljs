@@ -9,7 +9,7 @@
               [re-frame.core :as re-frame]
               [re-frisk.core :as re-frisk]
 
-;;              [accountant.core :as accountant]
+              [accountant.core :as accountant]
               ))
 
 ;; -------------------------
@@ -27,44 +27,40 @@
   [:div [(session/get :current-page)]])
 
 (defn main-panel []
-  (let [page (re-frame/subscribe [:page])]
+  (let [page (re-frame/subscribe [:page])
+        user (re-frame/subscribe [:user])]
     (fn []
+      (if (or (= @page :about) (= @page :loading) (= @user :none))
+        [:div {:class "loader"}]
       [:div
-       [:h2 @page]
-       [v/login-page #(re-frame/dispatch [:login %])]
-
-
-       ])))
+       [:a {:href "/about" :on-click #(secretary/dispatch! "/about" )} "about"]
+         [v/login-page #(re-frame/dispatch [:login %])]
+       ]))))
 
 ;; -------------------------
 ;; Routes
 
-;;(secretary/defroute "/" []
-;;  (session/put! :current-page #'home-page))
-
 (secretary/defroute "/about" []
-  (session/put! :current-page #'about-page))
+  (re-frame/dispatch [:navigate :about]))
 
 (secretary/defroute "/whoami" []
-  (session/put! :current-page #'whoami-page))
+ (re-frame/dispatch [:navigate :whoami]))
 
 (secretary/defroute "/" []
-  (session/put! :current-page #'login-page))
+  (re-frame/dispatch [:navigate :root]))
 
 ;; -------------------------
 ;; Initialize app
 
+(def accountant-configuration
+  {:nav-handler
+   (fn [path] (secretary/dispatch! path))
+   :path-exists?
+   (fn [path] (secretary/locate-route path))})
+
 (defn ^:export init! []
-  (re-frame/dispatch-sync [:initialize])
   (re-frisk/enable-re-frisk!)
-  (reagent/render [main-panel] (.getElementById js/document "app"))
-)
-;;  (accountant/configure-navigation!
-;;    {:nav-handler
-;;     (fn [path]
-;;       (secretary/dispatch! path))
-;;     :path-exists?
-;;     (fn [path]
-;;       (secretary/locate-route path))})
-;;  (accountant/dispatch-current!)
-;;  (mount-root))
+  (accountant/configure-navigation! accountant-configuration)
+  (re-frame/dispatch-sync [:initialize])
+  (accountant/dispatch-current!)
+  (reagent/render [main-panel] (.getElementById js/document "app")))

@@ -23,6 +23,7 @@
                  [secretary "1.2.3"]
                  [venantius/accountant "0.1.7"
                   :exclusions [org.clojure/tools.reader]]
+                 [com.cemerick/url "0.1.1"]
                  [reagent "0.6.0"]
                  [reagent-utils "0.2.0"]
                  [re-frame "0.9.2"]
