@@ -30,12 +30,10 @@
   (let [page (re-frame/subscribe [:page])
         user (re-frame/subscribe [:user])]
     (fn []
-      (if (or (= @page :about) (= @page :loading) (= @user :none))
-        [:div {:class "loader"}]
-      [:div
-       [:a {:href "/about" :on-click #(secretary/dispatch! "/about" )} "about"]
-         [v/login-page #(re-frame/dispatch [:login %])]
-       ]))))
+      (cond
+        (or (= @page :loading) (= @user :none)) [:div {:class "loader"}]
+        (= @page :whoami) [v/whoami user]
+        :else [v/login-page #(re-frame/dispatch [:login %])]))))
 
 ;; -------------------------
 ;; Routes

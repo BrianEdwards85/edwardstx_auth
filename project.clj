@@ -40,6 +40,7 @@
                  [digest "1.4.5"]
                  [buddy "1.2.0"]
                  [one-time "0.2.0"]
+                 [clj-crypto "1.0.2"]
                  [clj-time "0.11.0"]
 
                  [com.rpl/specter "0.10.0"]

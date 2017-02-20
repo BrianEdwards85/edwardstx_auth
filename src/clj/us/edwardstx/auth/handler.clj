@@ -15,18 +15,14 @@
 
 (def semaphore (d/deferred))
 
-(def mount-target
-  [:div#app
-   [:div.loader ]
-   ])
+(def mount-target [:div#app [:div.loader ]])
 
 
 (defn head [t]
   [:head
    (if t [:title t])
    [:meta {:charset "utf-8"}]
-   [:meta {:name "viewport"
-           :content "width=device-width, initial-scale=1"}]
+   [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
    [:link
     {:type "text/css"
      :rel "stylesheet"
@@ -64,7 +60,7 @@
        slurp))
 
 (defn auth [r]
-  (let [s (read-body r) 
+  (let [s (read-body r)
         j (json/read-str s :key-fn keyword)
         cred (if (string? (:auth j)) (assoc j :auth (read-string (:auth j))) j)]
     (if (authentication/authenticate cred)
@@ -100,14 +96,20 @@
      :headers {"Content-Type" "application/json" "Extra" "No"}
      :status 200}))
 
+(defn logout [r]
+  {:status 200
+   :body (loading-page)
+   :headers { "Content-Type"   "text/html"}
+   :cookies {"uid" {:value "_" :domain ".edwardstx.us" :max-age 1}}})
+
 (defroutes routes
   (GET "/" [] (loading-page))
-  (GET "/" [] (loading-page))
   (GET "/whoami" [] (loading-page))
+  (GET "/about" [] (loading-page))
+  (GET "/logout" [] logout)
   (POST "/auth" [] auth )
   (POST "/validate" [] validate-post)
   (GET "/validate" [] validate-get)
-  (GET "/about" [] (loading-page))
   (GET "/key" [] (pub-key))
   (GET "/echo" [] echo)
   (resources "/")

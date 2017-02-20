@@ -39,6 +39,7 @@
 (re-frame/reg-event-db
  :no-user
  (fn [db [_ _]]
+   (accountant/navigate! "/")
    (assoc db :user nil)))
 
 (re-frame/reg-event-db

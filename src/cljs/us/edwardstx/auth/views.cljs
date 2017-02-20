@@ -46,3 +46,10 @@
          {:class "btn btn-lg btn-primary btn-block"
           :on-click #(login {:user @user :pass @pass :auth @auth})} "Login"]
         ]])))
+
+(defn whoami [user]
+  [auth-panel
+   [:div.panel-heading
+    [:h2 "Welcome"]]
+   [:div.panel-body
+    [:h3 (:sub @user)]]])
