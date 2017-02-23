@@ -1,4 +1,4 @@
-(ns auth.middleware
+(ns us.edwardstx.auth.middleware
   (:require [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [ring.middleware.cookies :refer [wrap-cookies]]))
 

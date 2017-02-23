@@ -24,10 +24,10 @@
 
 (defn -main [& args]
   (let [conf (get-conf)
-        http-port (:http-port conf)]
+        http-port (Integer/parseInt (:http-port conf))
+        nrepl-port (Integer/parseInt (:nrepl-port conf))]
     (start-or-restart-server http-port)
-    (reset! nrepl-server-atom (nrepl/start-server :port (:nrepl-port conf)))
-
+    (reset! nrepl-server-atom (nrepl/start-server :port nrepl-port))
     @semaphore
     (stop-server)
     (nrepl/stop-server @nrepl-server-atom))

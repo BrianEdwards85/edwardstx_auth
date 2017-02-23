@@ -1,12 +1,22 @@
 (ns us.edwardstx.auth.token
   (:require [buddy.sign.jwt :as jwt]
-            [buddy.core.keys :as keys]
+            [clj-crypto.core :as crypto]
+            [us.edwardstx.auth.data.services :as data]
+            [config.core :refer [env]]
             [clj-time.core :as time]
             [clojure.string :as s]
             [us.edwardstx.auth.core :refer [conf]]))
 
-(def ec-privkey (keys/str->private-key (s/replace (-> conf :jwt :private-key) "\\n" "\n")))
-(def ec-pubkey (keys/str->public-key  (s/replace (-> conf :jwt :public-key) "\\n" "\n")))
+(def key-pair
+  (crypto/decode-key-pair
+   {:public-key {:algorithm "ECDSA"
+                 :bytes (-> env :public-key crypto/decode-base64)}
+    :private-key {:algorithm "ECDSA"
+                  :bytes (-> env :private-key crypto/decode-base64)}}))
+
+(def ec-privkey (crypto/private-key key-pair))
+(def ec-pubkey (crypto/public-key key-pair))
+
 
 (def headder {:alg :es256} ) ;;(-> conf :jwt :headder))
 (def issuer (-> conf :jwt :iss))
@@ -23,16 +33,37 @@
   (jwt/sign (extend-claims claims) ec-privkey headder))
 
 
-(defn unsign [token]
-  (try
-    (jwt/unsign token ec-pubkey headder)
-    (catch Exception e
-      (println (.getMessage e))
-      nil)))
+(defn unsign
+  ([token] (unsign token ec-pubkey))
+  ([token key]
+   (try
+     (jwt/unsign token (crypto/as-public-key key) headder)
+     (catch Exception e
+       (println (.getMessage e))
+       nil))))
 
 (defn issue-token [user s]
   (sign {:sub user :jti s}))
 
+(defn read-public-key [key-string]
+    (->> key-string
+         crypto/decode-base64
+         (assoc {:algorithm "ECDSA"} :bytes)
+         crypto/decode-public-key))
+
+(defn issue-service-token [service ksr]
+  (if-let [key-string (data/get-service-key service)]
+    (if-let [service-public-key (read-public-key key-string)]
+      (if-let [ksr-claimes (unsign ksr service-public-key)]
+        (if (= service (:sub ksr-claimes))
+          (jwt/sign
+           (assoc (extend-claims ksr-claimes) :key key-string)
+           ec-privkey
+           headder)
+          nil)
+        nil)
+      nil)
+    nil))
 
 
 

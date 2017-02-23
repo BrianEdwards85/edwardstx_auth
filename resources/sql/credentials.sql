@@ -1,7 +1,7 @@
 -- name: get-credentials-sql
 SELECT email, hash, salt, secret
   FROM auth.credentials
-  WHERE email = :email
+ WHERE email = :email
 
 -- name: set-credentials-sql!
 UPDATE auth.credentials

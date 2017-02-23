@@ -73,8 +73,8 @@
       authentication-failed)))
 
 (defn pub-key []
-  (let [key (-> conf :jwt :public-key)
-        header (-> conf :jwt :headder)]
+  (let [key (:public-key env)
+        header token/headder]
     (json/write-str {:key key :header header})))
 
 (defn validate-post [r]
@@ -102,12 +102,22 @@
    :headers { "Content-Type"   "text/html"}
    :cookies {"uid" {:value "_" :domain ".edwardstx.us" :max-age 1}}})
 
+(defn service-token [r]
+  (let [service (get-in r [:route-params :service])
+        ksr (read-body r)]
+    (if-let [token (token/issue-service-token service ksr)]
+      {:status 200
+       :body token
+       :cookies {"service-token" {:value token :domain ".edwardstx.us" :max-age 86000}}}
+      invalid-token)))
+
 (defroutes routes
   (GET "/" [] (loading-page))
   (GET "/whoami" [] (loading-page))
   (GET "/about" [] (loading-page))
   (GET "/logout" [] logout)
-  (POST "/auth" [] auth )
+  (POST "/auth" [] auth)
+  (POST "/service/:service/token" [service] service-token)
   (POST "/validate" [] validate-post)
   (GET "/validate" [] validate-get)
   (GET "/key" [] (pub-key))
