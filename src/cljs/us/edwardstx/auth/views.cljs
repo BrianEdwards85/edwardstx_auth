@@ -1,5 +1,5 @@
 (ns us.edwardstx.auth.views
-  (:require [reagent.core  :as r] ;; :refer [atom]]
+  (:require [reagent.core  :as r]
             [re-frame.core :refer [subscribe dispatch]]))
 
 (defn rest-map [a b]

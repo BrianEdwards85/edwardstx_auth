@@ -61,7 +61,7 @@
 
   :uberjar-name "auth.jar"
 
-  :main us.edwardstx.auth    ;;.server
+  :main us.edwardstx.auth
 
   :clean-targets ^{:protect false}
   [:target-path
