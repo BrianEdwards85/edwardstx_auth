@@ -17,17 +17,16 @@
 (def ec-privkey (crypto/private-key key-pair))
 (def ec-pubkey (crypto/public-key key-pair))
 
-
-(def headder {:alg :es256} ) ;;(-> conf :jwt :headder))
+(def headder {:alg :es256})
 (def issuer (-> conf :jwt :iss))
 
-
-;;(def myclaims {:sub "bedwards.cs.utsa.edu@gmail.com" :perm '("admin" "users")})
-
 (defn extend-claims [claims]
-  (assoc claims
-         :iss issuer
-         :exp (time/plus (time/now) (time/days 1))))
+  (let [n (time/now)]
+    (assoc claims
+           :iss issuer
+           :exp (time/plus n (time/days 1))
+           :iat n)))
+
 
 (defn sign [claims]
   (jwt/sign (extend-claims claims) ec-privkey headder))

@@ -120,7 +120,7 @@
   (POST "/service/:service/token" [service] service-token)
   (POST "/validate" [] validate-post)
   (GET "/validate" [] validate-get)
-  (GET "/key" [] (pub-key))
+  (GET "/key" [] (:public-key env))
   (GET "/echo" [] echo)
   (resources "/")
   (not-found "Not Found"))
