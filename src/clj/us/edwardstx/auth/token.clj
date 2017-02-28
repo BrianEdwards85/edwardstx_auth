@@ -20,11 +20,13 @@
 (def headder {:alg :es256})
 (def issuer (-> conf :jwt :iss))
 
+(def exp-interval (atom (time/days 1)))
+
 (defn extend-claims [claims]
   (let [n (time/now)]
     (assoc claims
            :iss issuer
-           :exp (time/plus n (time/days 1))
+           :exp (time/plus n @exp-interval)
            :iat n)))
 
 
