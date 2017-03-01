@@ -5,7 +5,7 @@
 (def ds-options
   (let [{:keys [subname subprotocol] :as db-conf} (:db  conf)]
     (assoc
-     (into {} 
+     (into {}
            (filter
             #(contains?
               #{:username :password :jdbc-url}

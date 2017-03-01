@@ -8,20 +8,20 @@
 (defn login [auth succcess failure]
   (let [body (.stringify js/JSON (clj->js auth))]
     {:http-xhrio {:method          :post
-                  :uri             "/auth"
+                  :uri             "/api/auth"
                   :body            body
                   :format          (ajax/json-request-format)
                   :response-format json
-                  :headers {:content-type "application/json"}
+                  :headers         {:content-type "application/json"}
                   :on-success      [succcess]
                   :on-failure      [failure]}}))
 
 (defn validate [valid-user no-user]
-  {:http-xhrio {:method :get
-                :uri "/validate"
+  {:http-xhrio {:method          :get
+                :uri             "/api/validate"
                 :response-format json
-                :on-success [valid-user]
-                :on-failure [no-user]}})
+                :on-success      [valid-user]
+                :on-failure      [no-user]}})
 
 
 ;;(defn send-auth [auth]

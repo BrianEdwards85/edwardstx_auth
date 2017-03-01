@@ -20,11 +20,3 @@
         (println (.getMessage e))
         nil)))
 
-(defn wrap-jwt [handler]
-  (fn [request]
-    (if-let [t (get-in request [:cookies "uid" :value])]
-      (if-let [v (unsign t)]
-        (binding [*jwt* v]
-          (handler (assoc request :jwt *jwt*)))
-        (binding [*jwt* nil] (handler request)))
-      (binding [*jwt* nil] (handler request)))))
