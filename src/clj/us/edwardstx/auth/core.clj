@@ -9,6 +9,7 @@
 (declare ^:dynamic *jwt*)
 (defonce service-key (atom nil))
 (def exp-interval (atom (time/days 1)))
+(def service-name (:service-name env))
 
 (def key-pair
   (crypto/decode-key-pair
@@ -35,4 +36,5 @@
 
 ;;(def conf {})
 
-(def conf (c/get-conf))
+(def conf @(c/get-conf service-name (create-service-key) key-pair))
+;;(def conf (c/get-conf))
