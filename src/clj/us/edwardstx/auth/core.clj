@@ -36,5 +36,5 @@
 
 ;;(def conf {})
 
-(def conf @(c/get-conf service-name (create-service-key) key-pair))
-;;(def conf (c/get-conf))
+;;(def conf @(c/get-conf service-name (create-service-key) key-pair))
+(def conf (c/get-conf))
