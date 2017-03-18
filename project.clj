@@ -50,6 +50,7 @@
                  [hare "0.2.0"]]
 
   :plugins [[lein-environ "1.0.2"]
+            [lein-sassy "1.0.8"]
             [lein-cljsbuild "1.1.1"]
             [lein-asset-minifier "0.2.7"
              :exclusions [org.clojure/clojure]]]
