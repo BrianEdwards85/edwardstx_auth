@@ -4,14 +4,17 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/clojure "1.8.0"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha15"]
                  [org.clojure/data.json "0.2.6"]
                  [org.clojure/clojurescript "1.9.293"
                   :scope "provided"]
                  [org.clojure/core.async "0.2.395"]
                  [org.clojure/tools.nrepl "0.2.12"]
+                 [org.clojure/tools.logging "0.3.1"]
 
-                 [aleph "0.4.1"]
+                 ;;[aleph "0.4.3"]
+                 [aleph "0.4.4-alpha1"]
+ ;;                [manifold "0.1.6"]
                  [ring/ring-core "1.5.1"]
                  [ring/ring-defaults "0.2.1"]
 
@@ -20,6 +23,9 @@
                  [compojure "1.5.1"]
                  [hiccup "1.0.5"]
                  [yogthos/config "0.8"]
+                 [com.stuartsierra/component "0.3.2"]
+                 [com.rpl/specter "0.10.0"]
+
                  [secretary "1.2.3"]
                  [venantius/accountant "0.1.7"
                   :exclusions [org.clojure/tools.reader]]
@@ -28,7 +34,6 @@
                  [reagent-utils "0.2.0"]
                  [re-frame "0.9.2"]
                  [re-com "0.9.0"]
-                 [re-frisk "0.3.0"]
                  [day8.re-frame/http-fx "0.1.3"]
                  [cljs-ajax "0.5.8"]
 
@@ -36,27 +41,31 @@
                  [org.postgresql/postgresql "9.4.1208.jre7"]
                  [yesql "0.5.3"]
 
-                 [lock-key "1.4.1"]
-                 [digest "1.4.5"]
+;;                 [lock-key "1.4.1"]
+;;                 [digest "1.4.5"]
                  [buddy "1.2.0"]
                  [one-time "0.2.0"]
                  [clj-crypto "1.0.2"
                   :exclusions [org.bouncycastle/bcprov-jdk15on bouncycastle/bcprov-jdk16]]
                  [clj-time "0.11.0"]
 
-                 [com.rpl/specter "0.10.0"]
 
-                 [us.edwardstx/conf-client "0.4.3"]
-                 [hare "0.2.0"]]
+                 [org.clojure/tools.logging "0.3.1"]
+                 [org.apache.logging.log4j/log4j-core "2.7"]
+                 [org.apache.logging.log4j/log4j-slf4j-impl "2.7"]
+                 [org.springframework.amqp/spring-rabbit "2.0.0.M2"
+                  :exclusions [org.springframework/spring-web org.springframework/spring-tx]]
+
+                 [us.edwardstx/conf-client "0.4.5"]
+                 ;;[hare "0.2.0"]
+                 ]
 
   :plugins [[lein-environ "1.0.2"]
             [lein-sassy "1.0.8"]
             [lein-cljsbuild "1.1.1"]
-            [lein-asset-minifier "0.2.7"
-             :exclusions [org.clojure/clojure]]]
+            ]
 
-  :ring {:handler us.edwardstx.auth.handler/app
-         :uberwar-name "auth.war"}
+  :repositories [["spring.milestone" "https://repo.spring.io/libs-milestone"]]
 
   :min-lein-version "2.5.0"
 
@@ -72,9 +81,6 @@
   :source-paths ["src/clj" "src/cljc"]
   :resource-paths ["resources" "target/cljsbuild"]
 
-  :minify-assets
-  {:assets
-   {"resources/public/css/site.min.css" "resources/public/css/site.css"}}
 
   :cljsbuild
   {:builds {:min
@@ -118,13 +124,15 @@
 
                    :dependencies [[ring/ring-mock "0.3.0"]
                                   [ring/ring-devel "1.5.1"]
+                                  [re-frisk "0.3.0"]
                                   [prone "1.1.4"]
-                                  [midje "1.8.3" :exclusions [org.clojure/clojure]]
+                                  [midje "1.9.0-alpha6" :exclusions [org.clojure/clojure]]
                                   [figwheel-sidecar "0.5.8"]
                                   [com.cemerick/piggieback "0.2.2-SNAPSHOT"]
                                   [pjstadig/humane-test-output "0.8.1"]
                                   ]
 
+                   :resource-paths ["env/dev/resources" "resources"]
                    :source-paths ["env/dev/clj"]
                    :plugins [[lein-figwheel "0.5.8"]
                              [lein-midje "3.2.1"]

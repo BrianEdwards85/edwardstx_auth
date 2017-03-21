@@ -8,6 +8,7 @@
 
 (def headder {:alg :es256})
 (def ec-cipher (crypto/create-cipher "ECIES" ))
+(def exp-interval (atom (time/days 1)))
 
 (defrecord Keys [key-pair env]
   component/Lifecycle
@@ -26,12 +27,16 @@
 (s/def ::public-key ::specs/base64)
 (s/def ::private-key ::specs/base64)
 (s/def ::public-private-keys (s/keys :req-un [::public-key ::private-key]))
+(s/def ::key-pair #(instance? java.security.KeyPair  %))
+(s/def ::keys-record (s/keys :req-un [::key-pair]))
+
 
 (defn new-keys [env]
   {:pre [(s/valid? ::public-private-keys env)]}
-  (map->Keys {:env (select-keys env [:public-key :private-key])}))
+  (map->Keys {:env (select-keys env [:public-key :private-key :service-name])}))
 
 (defn sign [keys claims]
+  {:pre [(s/valid? ::keys-record keys)]}
       (jwt/sign claims
                 (-> keys :key-pair crypto/private-key)
                 headder))
@@ -48,3 +53,12 @@
    (crypto/decode-base64 data)
    ec-cipher))
 
+(defn extend-claims [keys claims]
+  (let [n (time/now)]
+    (assoc claims
+           :iss (-> keys :env :service-name)
+           :exp (time/plus n @exp-interval)
+           :iat n)))
+
+(defn creat-claims [sub jti]
+  {:sub sub :jti jti})
