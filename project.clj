@@ -127,6 +127,7 @@
                                   [re-frisk "0.3.0"]
                                   [prone "1.1.4"]
                                   [midje "1.9.0-alpha6" :exclusions [org.clojure/clojure]]
+                                  [org.clojure/test.check "0.9.0"]
                                   [figwheel-sidecar "0.5.8"]
                                   [com.cemerick/piggieback "0.2.2-SNAPSHOT"]
                                   [pjstadig/humane-test-output "0.8.1"]

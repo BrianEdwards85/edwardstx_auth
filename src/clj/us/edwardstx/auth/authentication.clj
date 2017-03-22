@@ -11,7 +11,7 @@
 (s/def ::pass ::specs/non-empty-string)
 (s/def ::hash ::specs/hex)
 (s/def ::salt ::specs/uuid)
-(s/def ::auth ::spec/positive-int)
+(s/def ::auth ::specs/positive-int)
 
 (defn verify-password [pass hash salt]
   {:pre [(s/valid? ::pass pass)
@@ -28,7 +28,7 @@
    {:pre [(s/valid? ::user user)
           (s/valid? ::pass pass)
           (s/valid? ::auth auth)]}
-   (if-let [{:keys [email hash salt secret]} (c/get-credentials db user)]
+   (if-let [{:keys [email hash salt secret]} (cred/get-credentials db user)]
      (and
       (verify-password pass hash salt)
       (ot/is-valid-totp-token? auth secret))
