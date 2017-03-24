@@ -2,57 +2,54 @@
   (:use midje.sweet)
   (:require [us.edwardstx.auth.authentication :as auth]
             [us.edwardstx.auth.authentication-test-data :as test-data]
+            [manifold.deferred :as d]
             ))
 
-(defonce td (atom nil))
+(let [{:keys [password salt hash]} (test-data/test-password)
+       passwd-map (test-data/test-password)
+       password1 (:password passwd-map)
+       salt1 (:salt passwd-map)
+       hash1 (:hash passwd-map)]
 
-(against-background
- [(before :contents (reset! td (test-data/test-password)))]
- (fact "verify-password functionality"
-       (auth/verify-password (:password @td) (:hash @td) (:salt @td)) => true
-       (auth/verify-password (str "X" (:password @td)) (:hash @td) (:salt @td)) => false
-       (auth/verify-password nil (:hash @td) (:salt @td)) => (throws java.lang.AssertionError)
-       (auth/verify-password "" (:hash @td) (:salt @td)) => (throws java.lang.AssertionError)
-       (auth/verify-password (:password @td) nil (:salt @td)) => (throws java.lang.AssertionError)
-       (auth/verify-password (:password @td) "" (:salt @td)) => (throws java.lang.AssertionError)
-       (auth/verify-password (:password @td) "#" (:salt @td)) => (throws java.lang.AssertionError)
-       (auth/verify-password (:password @td) (:hash @td) nil) => (throws java.lang.AssertionError)
-       (auth/verify-password (:password @td) (:hash @td) "") => (throws java.lang.AssertionError)
-       (auth/verify-password (:password @td) (:hash @td) "abef") => (throws java.lang.AssertionError)))
+  (fact "verify-password functionality"
+        (auth/verify-password password hash salt) => true
+        (auth/verify-password (str "X" password) hash salt) => false
+        (auth/verify-password nil hash salt) => (throws java.lang.AssertionError)
+        (auth/verify-password "" hash salt) => (throws java.lang.AssertionError)
+        (auth/verify-password password nil salt) => (throws java.lang.AssertionError)
+        (auth/verify-password password "" salt) => (throws java.lang.AssertionError)
+        (auth/verify-password password "#" salt) => (throws java.lang.AssertionError)
+        (auth/verify-password password hash nil) => (throws java.lang.AssertionError)
+        (auth/verify-password password hash "") => (throws java.lang.AssertionError)
+        (auth/verify-password password hash "abef") => (throws java.lang.AssertionError))
+
+  (facts
+   (prerequisites
+    (us.edwardstx.auth.data.credentials/get-credentials ..db.. ..email..) => (d/success-deferred  {:email ..email..
+                                                                                                   :hash hash
+                                                                                                   :salt salt
+                                                                                                   :secret ..secret..})
+    (us.edwardstx.auth.data.credentials/get-credentials ..db.. ..email2..) => (d/success-deferred  nil)
+    (one-time.core/is-valid-totp-token? ..auth.. ..secret..) => true
+    (one-time.core/is-valid-totp-token? ..authbad.. ..secret..) => false
+    (clojure.spec/valid? anything anything) => true
+    (us.edwardstx.common.uuid/uuid) => salt1)
+
+   (fact "authenticate functionality"
+         @(auth/authenticate ..db.. ..email.. password ..auth..) => true
+         @(auth/authenticate ..db.. ..email.. password ..authbad..) => false
+         @(auth/authenticate ..db.. ..email.. (str "X" password) ..auth..) => false
+         @(auth/authenticate ..db.. ..email2.. password ..auth..) => false)
+
+   (fact "update-password!"
+         @(auth/update-password! ..db.. ..email.. password1) => 1
+         (provided
+          (us.edwardstx.auth.data.credentials/set-credentials! ..db.. ..email.. salt1 hash1) => (d/success-deferred 1)))
+
+   (fact "authenticate-update-password!"
+         @(auth/authenticate-update-password! ..db.. ..email.. password password1 ..auth..) => 1
+         (provided
+          (us.edwardstx.auth.data.credentials/set-credentials! ..db.. ..email.. salt1 hash1) => (d/success-deferred 1)))
 
 
-(against-background
- [(before :contents (reset! td (test-data/test-password)))]
- (fact "authenticate valid credentials functionality"
-       (auth/authenticate ..db.. ..email.. (:password @td) ..auth..) => true
-       (provided
-        (clojure.spec/valid? anything anything) => true
-        (us.edwardstx.auth.data.credentials/get-credentials ..db.. ..email..) => {:email ..email..
-                                                                                  :hash (:hash @td)
-                                                                                  :salt (:salt @td)
-                                                                                  :secret ..secret..}
-        (one-time.core/is-valid-totp-token? ..auth.. ..secret..) => true))
- (fact "authenticate invalid credentials functionality"
-       (auth/authenticate ..db.. ..email.. (:password @td) ..auth..) => false
-       (provided
-        (clojure.spec/valid? anything anything) => true
-        (us.edwardstx.auth.data.credentials/get-credentials ..db.. ..email..) => {:email ..email..
-                                                                                  :hash (:hash @td)
-                                                                                  :salt (:salt @td)
-                                                                                  :secret ..secret..}
-        (one-time.core/is-valid-totp-token? ..auth.. ..secret..) => false))
- (fact "authenticate invalid credentials functionality"
-       (auth/authenticate ..db.. ..email.. (str "X" (:password @td)) ..auth..) => false
-       (provided
-        (clojure.spec/valid? anything anything) => true
-        (us.edwardstx.auth.data.credentials/get-credentials ..db.. ..email..) => {:email ..email..
-                                                                                  :hash (:hash @td)
-                                                                                  :salt (:salt @td)
-                                                                                  :secret ..secret..}))
- (fact "authenticate missing credentials functionality"
-       (auth/authenticate ..db.. ..email.. (:password @td) ..auth..) => false
-       (provided
-        (clojure.spec/valid? anything anything) => true
-        (us.edwardstx.auth.data.credentials/get-credentials ..db.. ..email..) => nil))
-
- )
+   ))
