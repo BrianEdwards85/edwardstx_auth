@@ -2,7 +2,6 @@
 *.class
 /classes
 /.env
-*jar
 /.lein-*
 *.log
 /.nrepl-port
