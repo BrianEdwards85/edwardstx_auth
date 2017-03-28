@@ -64,11 +64,11 @@
 
   (fact "unsign-ksr"
         (auth/unsign-ksr signed key-map) => expected-unsinged
-        (auth/unsign-ksr (str "AS" signed "QA") key-map) => (throws java.security.SignatureException))
+        (auth/unsign-ksr (str "AS" signed "QA") key-map) => (throws Exception))
 
   (facts
    (prerequisites
     (us.edwardstx.auth.data.services/get-service-key ..db.. ..service..) => (d/success-deferred public-key-base64))
    (fact "validate-token"
          @(auth/validate-token ..db.. ..service.. signed) => expected-unsinged
-         @(auth/validate-token ..db.. ..service.. (str "ErE" signed "tears")) => (throws java.security.SignatureException))))
+         @(auth/validate-token ..db.. ..service.. (str "ErE" signed "tears")) => (throws Exception))))
