@@ -6,8 +6,6 @@
             [us.edwardstx.auth.keys-test-data :refer [init-test-data]]
             [clojure.spec :as s]))
 
-(defonce td (atom nil))
-
 (fact "::public-private-keys validates map of Base 64 encoded key pair"
       (s/valid? ::keys/public-private-keys {:public-key "Ab+Cd"  :private-key "EdeE=="}) => true
       (s/valid? ::keys/public-private-keys [:public-key "AbCd" :private-key "EdeE"]) => false
@@ -20,14 +18,16 @@
       (keys/new-keys {}) => (throws java.lang.AssertionError)
       (keys/new-keys {:public-key "Ab+Cd"  :private-key "EdeE=="}) => anything)
 
-(against-background
- [(before :contents (reset! td (init-test-data)))]
- (fact "Encrypt/decrypt"
-       (jwt/unsign
-        (keys/sign (:keys @td) (:claims @td))
-        (-> @td :key-pair crypto/public-key)
-        keys/headder) => (:claims @td)
+(let [{:keys [keys
+              key-pair
+              claims
+              signed
+              encrypted
+              claim-string]} (init-test-data {:iss "a.b.c" :sub "test"})]
 
-       (keys/unsign (:keys @td) (:signed @td)) => (:claims @td)
+  (fact "Encrypt/decrypt"
+        (jwt/unsign (keys/sign keys claims) (crypto/public-key key-pair) keys/headder) => claims
 
-       (keys/decrypt (:keys @td) (:encrypted @td)) => (:claim-string  @td)))
+        (keys/unsign keys signed) => claims
+
+        (keys/decrypt keys encrypted) => claim-string))

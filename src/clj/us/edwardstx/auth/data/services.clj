@@ -6,4 +6,5 @@
 (defqueries "sql/services.sql")
 
 (defn get-service-key [db service]
-  (:public_key (first (get-service-key-sql {:service service} (get-connection db)))))
+  (d/future 
+    (:public_key (first (get-service-key-sql {:service service} (get-connection db))))))

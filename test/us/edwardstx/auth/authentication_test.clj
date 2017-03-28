@@ -2,6 +2,7 @@
   (:use midje.sweet)
   (:require [us.edwardstx.auth.authentication :as auth]
             [us.edwardstx.auth.authentication-test-data :as test-data]
+            [us.edwardstx.auth.keys-test-data :as keys-test-data]
             [manifold.deferred :as d]
             ))
 
@@ -49,7 +50,25 @@
    (fact "authenticate-update-password!"
          @(auth/authenticate-update-password! ..db.. ..email.. password password1 ..auth..) => 1
          (provided
-          (us.edwardstx.auth.data.credentials/set-credentials! ..db.. ..email.. salt1 hash1) => (d/success-deferred 1)))
+          (us.edwardstx.auth.data.credentials/set-credentials! ..db.. ..email.. salt1 hash1) => (d/success-deferred 1)))))
 
+(let [{:keys [public-key-base64 public-key] :as key-pair} (keys-test-data/create-key-pair)]
+  (fact "read-public-key"
+        (auth/read-public-key public-key-base64) => public-key
+        (auth/read-public-key nil) => (throws java.lang.AssertionError)))
 
-   ))
+(let [claims {:sub "sub_" :iss "sub_"}
+      {:keys [public-key public-key-base64 signed]} (keys-test-data/init-test-data claims)
+      key-map {:key public-key :key-str public-key-base64}
+      expected-unsinged (assoc claims :key public-key-base64)]
+
+  (fact "unsign-ksr"
+        (auth/unsign-ksr signed key-map) => expected-unsinged
+        (auth/unsign-ksr (str "AS" signed "QA") key-map) => (throws java.security.SignatureException))
+
+  (facts
+   (prerequisites
+    (us.edwardstx.auth.data.services/get-service-key ..db.. ..service..) => (d/success-deferred public-key-base64))
+   (fact "validate-token"
+         @(auth/validate-token ..db.. ..service.. signed) => expected-unsinged
+         @(auth/validate-token ..db.. ..service.. (str "ErE" signed "tears")) => (throws java.security.SignatureException))))

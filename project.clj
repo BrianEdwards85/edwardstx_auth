@@ -41,8 +41,6 @@
                  [org.postgresql/postgresql "9.4.1208.jre7"]
                  [yesql "0.5.3"]
 
-;;                 [lock-key "1.4.1"]
-;;                 [digest "1.4.5"]
                  [buddy "1.2.0"]
                  [one-time "0.2.0"]
                  [clj-crypto "1.0.2"
