@@ -78,5 +78,4 @@
 (defn validate-token [db service ksr]
   (d/chain
    (services/get-service-key db service)
-   #(unsign-ksr ksr {:key (read-public-key %1) :key-str %1})
-   ))
+   #(unsign-ksr ksr {:key (read-public-key %1) :key-str %1})))
