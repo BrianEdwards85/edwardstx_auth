@@ -8,3 +8,10 @@ machine:
 dependencies:
   pre:
     - sudo rsync -r --include=*/ --include=*.jar --exclude=* .jdk-overlay/jre $JAVA_HOME
+
+test:
+  override:
+    - lein trampoline midje  :config circle_midje.clj
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
