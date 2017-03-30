@@ -3,7 +3,7 @@
             [clojure.tools.logging :as log]
             [com.stuartsierra.component :as component]))
 
-(defrecord Database [conf datasource]
+(defrecord Database [conf connection]
   component/Lifecycle
 
   (start [this]
@@ -13,16 +13,16 @@
       (let [ds (make-datasource db-conf)]
         (log/info "Connected to database")
         ;; (if-let [init-fn (:init-fn options)] (init-fn ds))
-        (assoc this :datasource ds))))
+        (assoc this :connection ds))))
 
   (stop [this]
     (log/info "Disconnecting from database")
-    (close-datasource datasource)
-    (assoc this :datasource nil)))
+    (close-datasource connection)
+    (assoc this :connection nil)))
 
 
 (defn new-database []
   (map->Database {}))
 
 (defn get-connection [db]
-  {:connection (select-keys db [:datasource])})
+  {:connection (select-keys db [:connection])})

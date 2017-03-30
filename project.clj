@@ -129,9 +129,10 @@
                                   [figwheel-sidecar "0.5.8"]
                                   [com.cemerick/piggieback "0.2.2-SNAPSHOT"]
                                   [pjstadig/humane-test-output "0.8.1"]
-                                  ]
+                                  [com.h2database/h2 "1.4.194"]
+                                  [org.clojure/java.jdbc "0.6.1"]]
 
-                   :resource-paths ["env/dev/resources" "resources"]
+                   :resource-paths ["env/dev/resources" "env/test/resources" "resources"]
                    :source-paths ["env/dev/clj"]
                    :plugins [[lein-figwheel "0.5.8"]
                              [lein-midje "3.2.1"]

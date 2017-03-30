@@ -1,6 +1,7 @@
 (ns us.edwardstx.auth.authentication-test-data
   (:require [us.edwardstx.common.spec :as specs]
             [buddy.core.mac :as mac]
+            [one-time.core :as ot]
             [buddy.core.codecs :as codecs]
             [clojure.spec :as s]
             [clojure.spec.gen :as gen]))
@@ -11,5 +12,6 @@
     {:password password
      :email (str (gen/generate (s/gen ::specs/hex)) "@testing.org")
      :salt salt
+     :secret (ot/generate-secret-key)
      :hash (codecs/bytes->hex (mac/hash password {:key salt :alg :hmac+sha256}))}))
 
