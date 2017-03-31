@@ -62,12 +62,17 @@
       key-map {:key public-key :key-str public-key-base64}
       expected-unsinged (assoc claims :key public-key-base64)]
 
+  (fact "verify-service"
+        (auth/verify-service (:sub claims) claims) => claims
+        (auth/verify-service (str "not_" (:sub claims)) claims) => (throws Exception))
+
   (fact "unsign-ksr"
         (auth/unsign-ksr signed key-map) => expected-unsinged
         (auth/unsign-ksr (str "AS" signed "QA") key-map) => (throws Exception))
 
   (facts
    (prerequisites
+    (auth/verify-service ..service.. expected-unsinged) => expected-unsinged
     (us.edwardstx.auth.data.services/get-service-key ..db.. ..service..) => (d/success-deferred public-key-base64))
    (fact "validate-token"
          @(auth/validate-token ..db.. ..service.. signed) => expected-unsinged

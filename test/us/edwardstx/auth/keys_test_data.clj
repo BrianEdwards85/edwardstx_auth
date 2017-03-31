@@ -46,14 +46,3 @@
              :encrypted encrypted
              :keys keys})))
 
-
-(comment
-
-  ([] (init-test-data {:iss "a.b.c" :sub "test"}))
-  :key-pair key-pair
-  :key-pair-map key-pair-map
-  :public-key-base64 public-key-base64
-  :private-key-base64 private-key-base64
-
-  )
-

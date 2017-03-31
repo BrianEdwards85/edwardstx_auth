@@ -75,7 +75,15 @@
    (jwt/unsign ksr key {:alg :es256})
    :key key-str))
 
+(defn verify-service [service {:keys [sub] :as claims}]
+  (if (= service sub)
+    claims
+    (throw (Exception. (str service " did not match" sub)))))
+
 (defn validate-token [db service ksr]
   (d/chain
    (services/get-service-key db service)
-   #(unsign-ksr ksr {:key (read-public-key %1) :key-str %1})))
+   #(if (nil? %1) (throw (Exception. (str "Service " service " not found"))) %1)
+   #(unsign-ksr ksr {:key (read-public-key %1) :key-str %1})
+   #(verify-service service %)
+   ))

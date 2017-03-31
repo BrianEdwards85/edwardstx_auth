@@ -59,11 +59,13 @@
                                  service-name "hvac_daemon"
                                  service (-> conf :services (get "hvac_daemon"))
                                  ksr (generate-ksr service-name)
+                                 ksr (generate-ksr service-name)
                                  token (jwt/sign ksr (:private-key service)  {:alg :es256})
+                                 token2 (jwt/sign ksr (-> conf :services (get "auth.edwardstx.us") :private-key) {:alg :es256})
+                                 token3 (jwt/sign (generate-ksr "not_hvac_daemon") (:private-key service)  {:alg :es256})
                                  claims (dissoc  (assoc ksr :key (:public-key-base64 service)) :exp )]
-                             (dissoc @(auth/validate-token db service-name token) :exp) => claims))
-
-
-
-
-                    )
+                             (dissoc @(auth/validate-token db service-name token) :exp) => claims
+                             @(auth/validate-token db service-name token3) => (throws Exception)
+                             @(auth/validate-token db service-name token2) => (throws Exception)
+                             @(auth/validate-token db (str "not_" service-name) token) => (throws Exception)
+                                     )))
