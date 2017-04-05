@@ -12,9 +12,7 @@
                  [org.clojure/tools.nrepl "0.2.12"]
                  [org.clojure/tools.logging "0.3.1"]
 
-                 ;;[aleph "0.4.3"]
-                 [aleph "0.4.4-alpha1"]
- ;;                [manifold "0.1.6"]
+                 [aleph "0.4.3"]
                  [ring/ring-core "1.5.1"]
                  [ring/ring-defaults "0.2.1"]
 
