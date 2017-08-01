@@ -2,6 +2,7 @@
   (:require [clojure.java.jdbc :as sql]
             [clojure.string :as str]
             [clojure.java.io :as io]
+            [us.edwardstx.auth.data.db :as db]
             [us.edwardstx.test.db.core-services :refer [create-services]]
             [us.edwardstx.test.db.auth-credentials :refer [create-credentials]]
             [com.stuartsierra.component :as component]))
@@ -12,8 +13,6 @@
              :user        "sa"
              :password    ""})
 
-(defn get-conn [db]
-  {:connection (select-keys db [:connection])})
 
 (defn get-schema-statments [f]
   (->>
@@ -48,7 +47,12 @@
 
   (stop [this]
     (.close connection)
-    (assoc this :connection nil)))
+    (assoc this :connection nil))
+
+  db/DBConnection
+  (get-connection [db]
+    {:connection (select-keys db [:connection])})
+  )
 
 
 (defn new-test-database [conf]

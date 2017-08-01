@@ -3,6 +3,9 @@
             [clojure.tools.logging :as log]
             [com.stuartsierra.component :as component]))
 
+(defprotocol DBConnection
+  (get-connection [this]))
+
 (defrecord Database [conf datasource]
   component/Lifecycle
 
@@ -18,11 +21,17 @@
   (stop [this]
     (log/info "Disconnecting from database")
     (close-datasource datasource)
-    (assoc this :datasource nil)))
+    (assoc this :datasource nil))
+
+  DBConnection
+
+  (get-connection [this]
+    {:connection (select-keys this [:datasource])})
+  )
 
 
 (defn new-database []
   (map->Database {}))
 
-(defn get-connection [db]
-  {:connection (select-keys db [:datasource])})
+;;(defn get-connection [db]
+;;  {:connection (select-keys db [:datasource])})
