@@ -22,7 +22,19 @@
 
 (defn -main [&args]
   (reset! system (init-system env))
+
   (swap! system component/start)
 
   )
 
+
+(comment
+  (use 'us.edwardstx.auth :reload)
+
+  (in-ns 'us.edwardstx.auth)
+
+  (reset! system (component/system-map :keys (new-keys env)))
+
+  (swap! system component/start)
+
+  )
