@@ -3,7 +3,7 @@
  ;;           [us.edwardstx.conf.client :as c]
             [us.edwardstx.auth.keys :as keys]
             [clj-time.core :as time]
-            [clojure.spec :as s]
+            [clojure.spec.alpha :as s]
             [com.stuartsierra.component :as component]
 
             [manifold.deferred :as d]

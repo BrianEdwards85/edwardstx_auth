@@ -1,7 +1,7 @@
 (ns us.edwardstx.common.spec-test
   (:use midje.sweet)
   (:require [us.edwardstx.common.spec :as spec]
-            [clojure.spec :as s]))
+            [clojure.spec.alpha :as s]))
 
 (fact "::non-empty-string validates non empty strings"
       (s/valid? ::spec/non-empty-string "Valid string") => true

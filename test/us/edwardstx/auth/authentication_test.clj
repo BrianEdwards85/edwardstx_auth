@@ -33,7 +33,7 @@
     (us.edwardstx.auth.data.credentials/get-credentials ..db.. ..email2..) => (d/success-deferred  nil)
     (one-time.core/is-valid-totp-token? ..auth.. ..secret..) => true
     (one-time.core/is-valid-totp-token? ..authbad.. ..secret..) => false
-    (clojure.spec/valid? anything anything) => true
+    (clojure.spec.alpha/valid? anything anything) => true
     (us.edwardstx.common.uuid/uuid) => salt1)
 
    (fact "authenticate functionality"

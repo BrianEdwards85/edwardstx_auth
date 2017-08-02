@@ -5,7 +5,7 @@
             [clj-crypto.core :as crypto]
             [one-time.core :as ot]
             [manifold.deferred :as d]
-            [clojure.spec :as s]
+            [clojure.spec.alpha :as s]
             [us.edwardstx.auth.data.credentials :as cred]
             [us.edwardstx.auth.data.services :as services]
             [us.edwardstx.common.spec :as specs]

@@ -4,7 +4,7 @@
             [buddy.sign.jwt :as jwt]
             [clj-crypto.core :as crypto]
             [us.edwardstx.auth.keys-test-data :refer [init-test-data]]
-            [clojure.spec :as s]))
+            [clojure.spec.alpha :as s]))
 
 (fact "::public-private-keys validates map of Base 64 encoded key pair"
       (s/valid? ::keys/public-private-keys {:public-key "Ab+Cd"  :private-key "EdeE=="}) => true

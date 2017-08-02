@@ -3,8 +3,8 @@
             [buddy.core.mac :as mac]
             [one-time.core :as ot]
             [buddy.core.codecs :as codecs]
-            [clojure.spec :as s]
-            [clojure.spec.gen :as gen]))
+            [clojure.spec.alpha :as s]
+            [clojure.spec.gen.alpha :as gen]))
 
 (defn test-password []
   (let [password (gen/generate (s/gen ::specs/hex))

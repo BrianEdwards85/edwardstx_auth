@@ -1,5 +1,5 @@
 (ns us.edwardstx.common.spec
-  (:require [clojure.spec :as s]))
+  (:require [clojure.spec.alpha :as s]))
 
 (s/def ::non-empty-string (s/and string? not-empty))
 (s/def ::positive-int (s/and integer? #(> % 0)))

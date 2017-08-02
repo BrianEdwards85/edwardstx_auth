@@ -15,5 +15,5 @@
   (stop [this]
     this))
 
-(def new-orchestrator []
+(defn new-orchestrator []
   (map->Orchestrator {}))

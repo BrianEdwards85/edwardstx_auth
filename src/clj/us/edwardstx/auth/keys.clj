@@ -4,7 +4,7 @@
             [clj-time.core :as time]
             [com.stuartsierra.component :as component]
             [us.edwardstx.common.spec :as specs]
-            [clojure.spec :as s]))
+            [clojure.spec.alpha :as s]))
 
 (def headder {:alg :es256})
 (def ec-cipher (crypto/create-cipher "ECIES" ))
