@@ -3,6 +3,8 @@
             [com.stuartsierra.component :as component]
             [us.edwardstx.auth.data.db :refer [new-database]]
             [us.edwardstx.auth.keys :refer [new-keys]]
+            [us.edwardstx.auth.handler :refer [new-handler]]
+            [us.edwardstx.auth.server :refer [new-server]]
             [us.edwardstx.auth.conf :refer [new-conf]]))
 
 
@@ -17,7 +19,10 @@
    :db (component/using
         (new-database)
         [:conf])
-
+   :handler (new-handler)
+   :server (component/using
+            (new-server)
+            [:handler])
    ))
 
 (defn -main [&args]
@@ -36,5 +41,10 @@
   (reset! system (component/system-map :keys (new-keys env)))
 
   (swap! system component/start)
+
+  (use 'midje.repl)
+
+  (autotest)
+
 
   )

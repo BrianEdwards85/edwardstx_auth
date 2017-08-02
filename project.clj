@@ -4,9 +4,9 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
-  :dependencies [[org.clojure/clojure "1.9.0-alpha15"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
                  [org.clojure/data.json "0.2.6"]
-                 [org.clojure/clojurescript "1.9.293"
+                 [org.clojure/clojurescript "1.9.854"
                   :scope "provided"]
                  [org.clojure/core.async "0.2.395"]
                  [org.clojure/tools.nrepl "0.2.12"]
@@ -58,7 +58,7 @@
 
   :plugins [[lein-environ "1.0.2"]
             [lein-sassy "1.0.8"]
-            [lein-cljsbuild "1.1.1"]
+            [lein-cljsbuild "1.1.7"]
             ]
 
   :repositories [["spring.milestone" "https://repo.spring.io/libs-milestone"]]
