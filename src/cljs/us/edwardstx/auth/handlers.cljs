@@ -7,7 +7,7 @@
             [cemerick.url :as url]))
 
 (defn redirect [db]
-  (let [r (or (:redirect db) "/whoami")]
+  (let [r (or (:redirect db) "/auth/whoami")]
     (if (s/starts-with? r "http")
       (.assign js/location r)
       (accountant/navigate! r))))
@@ -39,7 +39,7 @@
 (re-frame/reg-event-db
  :no-user
  (fn [db [_ _]]
-   (accountant/navigate! "/")
+   (accountant/navigate! "/auth/")
    (assoc db :user nil)))
 
 (re-frame/reg-event-db

@@ -3,6 +3,7 @@
             [com.stuartsierra.component :as component]
             [us.edwardstx.auth.data.db :refer [new-database]]
             [us.edwardstx.auth.keys :refer [new-keys]]
+            [us.edwardstx.auth.orchestrator :refer [new-orchestrator]]
             [us.edwardstx.auth.handler :refer [new-handler]]
             [us.edwardstx.auth.server :refer [new-server]]
             [us.edwardstx.auth.conf :refer [new-conf]]))
@@ -19,7 +20,12 @@
    :db (component/using
         (new-database)
         [:conf])
-   :handler (new-handler)
+   :handler (component/using
+             (new-handler)
+             [:keys :orchestrator])
+   :orchestrator (component/using
+                  (new-orchestrator)
+                  [:db :keys])
    :server (component/using
             (new-server)
             [:handler])
@@ -35,6 +41,7 @@
 
 (comment
   (use 'us.edwardstx.auth :reload)
+
 
   (in-ns 'us.edwardstx.auth)
 

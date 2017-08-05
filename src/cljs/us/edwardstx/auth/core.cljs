@@ -22,13 +22,13 @@
 ;; -------------------------
 ;; Routes
 
-(secretary/defroute "/about" []
+(secretary/defroute "/auth/about" []
   (re-frame/dispatch [:navigate :about]))
 
-(secretary/defroute "/whoami" []
+(secretary/defroute "/auth/whoami" []
  (re-frame/dispatch [:navigate :whoami]))
 
-(secretary/defroute "/" []
+(secretary/defroute "/auth/" []
   (re-frame/dispatch [:navigate :root]))
 
 ;; -------------------------

@@ -60,5 +60,8 @@
            :exp (time/plus n @exp-interval)
            :iat n)))
 
-(defn creat-claims [sub jti]
-  {:sub sub :jti jti})
+(defn creat-claims
+  ([sub]
+   (creat-claims sub (str (java.util.UUID/randomUUID))))
+  ([sub jti]
+   {:sub sub :jti jti}))
