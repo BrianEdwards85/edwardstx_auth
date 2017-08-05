@@ -11,7 +11,6 @@
 
   (start [this]
     (let [db-conf (-> conf :conf :db)]
-      (println db-conf)
       (log/info "Connecting to database: " (assoc db-conf :password "*********"))
       (let [ds (make-datasource db-conf)]
         (log/info "Connected to database")

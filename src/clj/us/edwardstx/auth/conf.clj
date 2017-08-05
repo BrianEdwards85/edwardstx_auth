@@ -12,7 +12,7 @@
             [aleph.http :as http]
             ))
 
-(def env-settings [:service-name :conf-host])
+(def env-settings [:service-name :conf-host :port])
 
 (def ec-cipher (crypto/create-cipher "ECIES"))
 

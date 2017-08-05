@@ -65,11 +65,8 @@
         (if-let [v (keys/unsign (:keys request) t)]
           (binding [*jwt* v]
             (handler (assoc request :jwt v)))
-          (do (println "bad cookie")
-              (binding [*jwt* nil] (handler request))))
-        (do (println
-             (str "no cookie\n" (:cookies r)))
-            (binding [*jwt* nil] (handler request)))))))
+              (binding [*jwt* nil] (handler request)))
+            (binding [*jwt* nil] (handler request))))))
 
 (defn app-routes []
   (routes
@@ -85,7 +82,7 @@
    (not-found "Not Found")
    ))
 
-(defrecord Handler [http-handler semaphore keys orchestrator]
+(defrecord Handler [http-handler keys orchestrator]
   component/Lifecycle
 
   (start [this]
@@ -99,4 +96,4 @@
   )
 
 (defn new-handler []
-  (map->Handler {:semaphore (d/deferred)}))
+  (map->Handler {}))

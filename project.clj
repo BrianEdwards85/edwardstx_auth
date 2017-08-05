@@ -91,7 +91,7 @@
              :figwheel true
              :compiler
              {:main "us.edwardstx.auth.dev"
-              :asset-path "/js/out"
+              :asset-path "/auth/assets/js/out"
               :output-to "target/cljsbuild/public/js/app.js"
               :output-dir "target/cljsbuild/public/js/out"
               :source-map true

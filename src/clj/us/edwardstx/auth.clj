@@ -1,6 +1,8 @@
 (ns us.edwardstx.auth
   (:require [config.core :refer [env]]
             [com.stuartsierra.component :as component]
+            [manifold.deferred :as d]
+            [us.edwardstx.auth.core :refer [*semaphore*]]
             [us.edwardstx.auth.data.db :refer [new-database]]
             [us.edwardstx.auth.keys :refer [new-keys]]
             [us.edwardstx.auth.orchestrator :refer [new-orchestrator]]
@@ -28,15 +30,16 @@
                   [:db :keys])
    :server (component/using
             (new-server)
-            [:handler])
+            [:handler :conf])
    ))
 
-(defn -main [&args]
-  (reset! system (init-system env))
-
-  (swap! system component/start)
-
-  )
+(defn -main [& args]
+  (binding [*semaphore* (d/deferred)]
+    (reset! system (init-system env))
+    (swap! system component/start)
+    (deref *semaphore*)
+    (component/stop @system)
+    (shutdown-agents)))
 
 
 (comment
