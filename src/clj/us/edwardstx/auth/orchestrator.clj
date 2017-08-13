@@ -33,3 +33,9 @@
     #(if % user (throw (Exception. "Authentication Failed")))
     #(issue-token (:keys orchestrator) %)
     )))
+
+(defn service-token [orchestrator service ksr]
+  (d/chain
+   (authentication/validate-token (:db orchestrator) service ksr)
+   #(keys/extend-claims (:keys orchestrator) %)
+   #(keys/sign (:keys orchestrator) %)))

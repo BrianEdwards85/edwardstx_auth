@@ -48,10 +48,20 @@
                    :body (json/write-str (select-keys %1 [:token :jti :sub :iss]))
                    :headers json-header
                    :cookies {"uid" {:value (:token %1) :domain ".edwardstx.us" :max-age 86000}}))
-        (d/catch (fn [e]
-                   ( do
-                     (println e)
-                     authentication-failed))))))
+        (d/catch (fn [e] authentication-failed))
+        )))
+
+(defn service-token [r]
+  (let [service (get-in r [:route-params :service])
+        ksr (read-body r)]
+    (-> (orchestrator/service-token (:orchestrator r) service ksr)
+        (d/chain #(hash-map
+                   :status 200
+                   :body %1))
+        (d/catch (fn [e] authentication-failed)))))
+
+(defn public-key [r]
+  (-> r :keys :env :public-key))
 
 (defn echo [r]
   (do {:body (json/write-str (dissoc  r :body :keys :orchestrator))
@@ -74,7 +84,9 @@
    (GET  "/auth/" [] loading-page)
    (GET  "/auth/about" [] loading-page)
    (GET  "/auth/whoami" [] loading-page)
+   (GET  "/auth/key" [] public-key)
    (POST "/auth/api/auth" [] auth)
+   (POST "/auth/api/service/:service/token" [service] service-token)
    (POST "/auth/api/validate" [] validate-post)
    (GET  "/auth/api/validate" [] validate-get)
    (GET  "/auth/api/echo" [] echo)

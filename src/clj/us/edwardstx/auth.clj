@@ -36,6 +36,7 @@
 (defn -main [& args]
   (binding [*semaphore* (d/deferred)]
     (reset! system (init-system env))
+
     (swap! system component/start)
     (deref *semaphore*)
     (component/stop @system)
