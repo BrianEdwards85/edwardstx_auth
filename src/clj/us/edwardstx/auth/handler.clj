@@ -47,7 +47,7 @@
                    :status 200
                    :body (json/write-str (select-keys %1 [:token :jti :sub :iss]))
                    :headers json-header
-                   :cookies {"uid" {:value (:token %1) :domain ".edwardstx.us" :max-age 86000}}))
+                   :cookies {"uid" {:value (:token %1) :domain ".edwardstx.us" :max-age 86000 :path "/"}}))
         (d/catch (fn [e] authentication-failed))
         )))
 

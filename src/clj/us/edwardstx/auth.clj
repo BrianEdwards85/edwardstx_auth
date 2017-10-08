@@ -8,7 +8,8 @@
             [us.edwardstx.auth.orchestrator :refer [new-orchestrator]]
             [us.edwardstx.auth.handler :refer [new-handler]]
             [us.edwardstx.auth.server :refer [new-server]]
-            [us.edwardstx.auth.conf :refer [new-conf]]))
+            [us.edwardstx.auth.conf :refer [new-conf]])
+(:gen-class) )
 
 
 (defonce system (atom {}))
